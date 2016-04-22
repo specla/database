@@ -1,0 +1,40 @@
+{
+  "name": "specla-database",
+  "version": "0.0.1",
+  "description": "database module",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Specla/Database.git"
+  },
+  "files": [
+    "index.js",
+    "Readme.md",
+    "License.md",
+    "src/database.js"
+  ],
+  "keywords": [
+    "Specla",
+    "Database"
+  ],
+  "author": [
+    {
+      "name": "Frederik Kvartborg Albertsen",
+      "url": "https://kvartborg.net"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Specla/database/issues"
+  },
+  "homepage": "https://github.com/Specla/Database#readme",
+  "dependencies": {
+    "mongodb": "^2.1.16"
+  }
+}
