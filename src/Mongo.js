@@ -70,6 +70,9 @@ class Mongo {
           done();
         });
         break;
+      case 'raw':
+        this.q.callback(db, done);
+        break;
       default:
         break;
     }
@@ -79,6 +82,14 @@ class Mongo {
     var db = new Mongo(this.options);
     db.q.collection = name;
     return db;
+  }
+
+
+  raw(callback){
+    var db = new Mongo(this.options);
+    db.q.method = 'raw';
+    db.q.callback = callback;
+    db.connect();
   }
 
 
