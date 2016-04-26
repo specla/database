@@ -19,7 +19,6 @@ class Database {
       case 'mysql':
         break;
       default: 
-        this.connection('mongo')
         break;
     }
   }

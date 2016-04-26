@@ -1,6 +1,7 @@
 'use strict';
 
-var MongoClient = require('mongodb').MongoClient
+var Database = require('./Database');
+var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
 
@@ -17,6 +18,11 @@ class Mongo {
     this.q = {
       collection: null,
       method: null,
+      where: {},
+      sort: {},
+      skip: 0,
+      limit: 0,
+      callback: (err, result) => {}
     };
   }
 
@@ -34,7 +40,7 @@ class Mongo {
   query(db, done){
     switch(this.q.method){
       case 'find':
-        var cursor = db.collection(this.q.collection)[this.q.method](this.q.item);
+        var cursor = db.collection(this.q.collection)[this.q.method](this.q.where).limit(this.q.limit).skip(this.q.skip).sort(this.q.sort);
         var data = [];
         cursor.each((err, doc) => {
           assert.equal(err, null);
@@ -49,7 +55,7 @@ class Mongo {
       case 'insert':
       case 'insertOne':
       case 'insertMany':
-        db.collection(this.q.collection)[this.q.method](this.q.item, (err, result) => {
+        db.collection(this.q.collection)[this.q.method](this.q.items, (err, result) => {
           this.q.callback(err, result);
           done();
         });
@@ -57,7 +63,7 @@ class Mongo {
       case 'update':
       case 'updateOne':
       case 'updateMany':
-        db.collection(this.q.collection)[this.q.method](this.q.where, this.q.set, (err, result) => {
+        db.collection(this.q.collection)[this.q.method](this.q.where, { $set: this.q.set }, (err, result) => {
           this.q.callback(err, result);
           done();
         });
@@ -65,7 +71,7 @@ class Mongo {
       case 'remove':
       case 'removeOne':
       case 'removeMany':
-        db.collection(this.q.collection)[this.q.method](this.q.item, (err, result) => {
+        db.collection(this.q.collection)[this.q.method](this.q.where, (err, result) => {
           this.q.callback(err, result);
           done();
         });
@@ -93,81 +99,83 @@ class Mongo {
   }
 
 
-  insert(item, callback, method){
-    if(!method){
-      method = 'insert';
+  where(key, value){
+    if(typeof key == 'object'){
+      this.q.where = key;
+      return this;
     }
 
-    this.q.method = method;
-    this.q.item = item;
-    this.q.item._id = ObjectId();
+    if(key === '_id'){
+      if(value instanceof Array){
+        var result = [];
+        for(var i = 0, item; item = value[i]; i++){ result.push(ObjectId(item)); }
+        value = result;
+      } else {
+        value = ObjectId(value);
+      }
+    }
+
+    if(value instanceof Array){
+      this.q.where[key] = { $in: value };
+    } else {
+      this.q.where[key] = value;
+    }
+
+    return this;
+  }
+
+
+  skip(obj){
+    this.q.skip = obj;
+    return this;
+  }
+
+
+  limit(obj){
+    this.q.limit = obj;
+    return this;
+  }
+
+  sort(key, order){
+    this.q.sort[key] = (order == 'asc' || order == 'ASC' || order == 1 ? 1 : -1);
+    return this;
+  }
+
+
+  insert(items, callback){
+    if(callback === undefined){
+      callback = (err, result) => {};
+    }
+
+    this.q.items = items;
+    this.q.method = 'insert';
     this.q.callback = callback;
+
+    for(var i = 0; i < this.q.items.length; i++){
+      this.q.items[i]._id = ObjectId();
+    }
+
     this.connect();
   }
 
 
-  insertOne(item, callback){
-    this.insert(item, callback, 'insertOne');
-  }
-
-
-  insertMany(item, callback){
-    this.insert(item, callback, 'insertMany');
-  }
-
-
-  update(where, set, callback, method){
-    if(!method){
-      method = 'update';
-    }
-
-    this.q.method = method;
-    this.q.where = where;
+  update(set, callback){
+    this.q.method = 'update';
     this.q.set = set;
     this.q.callback = callback;
     this.connect();
   }
 
 
-  updateOne(where, set, callback){
-    this.update(where, set, callback, 'updateOne');
-  }
-
-
-  updateMany(where, set, callback){
-    this.update(where, set, callback, 'updateMany');
-  }
-
-  remove(item, callback, method){
-    if(!method){
-      method = 'remove';
-    }
-
-    this.q.method = method;
-    this.q.item = item;
+  remove(callback){
+    this.q.method = 'remove';
     this.q.callback = callback;
     this.connect();
   }
 
 
-  removeOne(item, callback){
-    this.remove(item, callback, 'removeOne');
-  }
-
-
-  removeMany(item, callback){
-    this.remove(item, callback, 'removeMany');
-  }
-
-
-  find(item, callback){
-    if(callback === undefined){
-      callback = item;
-      item = undefined;
-    }
-
+  get(callback){
     this.q.method = 'find';
-    this.q.item = item;
     this.q.callback = callback;
     this.connect();
   }
