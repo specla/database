@@ -43,7 +43,7 @@ DB.collection('users')
 ```
 It's also possible to just parse an object to the `where()` like below
 ```js
-  .where({ name: 'John' })
+.where({ name: 'John' })
 ```
 
 #### Sort
