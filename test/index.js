@@ -1,22 +1,17 @@
 'use strict';
-var assert = require('assert');
-var Database = require('../src/database');
-var Mongo = require('../src/mongo');
 
+const assert = require('assert');
+const Database = require('../');
 
-var DB = new Mongo({
-  host: '192.168.99.100',
-  port: 32768,
-  database: 'Specla'
-});
-
-DB.raw((db, close) => {
-  var cursor = db.collection('users').find({}).sort({});
-  cursor.each((err, doc) => {
-    if(doc !== null){
-      console.log(doc);
-    } else {
-      close();
-    }
+describe('# Create a new instance of database', () => {
+  const DB = new Database({
+    host: '127.0.0.1',
+    port: 27017,
+    database: 'mydb'
   });
+
+  it('Default driver should be Mongo', () => assert.equal('Mongo', DB.constructor.name));
+  it('Host should be 127.0.0.1', () => assert.equal('127.0.0.1', DB.options.host));
+  it('Port should be 27017', () => assert.equal(27017, DB.options.port));
+  it('Database should be mydb', () => assert.equal('mydb', DB.options.database));
 });
