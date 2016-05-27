@@ -92,7 +92,7 @@ DB.collection('users')
 ```
 
 #### Raw
-If there is some Mongo functionality which isn't supported yet in this module, you can then use the raw method and have full accessibility to the Mongo object.
+If there is some Mongo functionality which isn't supported yet in this module, you can then use the raw method and have full access to the Mongo object.
 > Its important to notice that when youre using the raw method, you have to manually close the db connection with the `done` callback
 
 ```js
