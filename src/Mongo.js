@@ -1,6 +1,5 @@
 'use strict';
 
-var Database = require('./Database');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
@@ -31,7 +30,7 @@ class Mongo {
     var url = 'mongodb://'+this.host+':'+this.port+'/'+this.database;
     MongoClient.connect(url, (err, db) => {
       assert.equal(null, err);
-      this.query(db, function(){
+      this.query(db, () => {
         db.close();
       });
     });

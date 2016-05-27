@@ -1,28 +1,37 @@
 'use strict';
 
 var Mongo = require('./Mongo');
-var MySQL = require('./MySQL');
 
 class Database {
 
   constructor(options){
-    this.driver = null;
+    this.driver = options.driver || 'mongo';
     this.options = options;
-    this.connections = [];
+
+    this.validateOptions();
+    return this.getDriver();
   }
 
-  connection(connection){
-    switch(this.options[connection].driver){
-      case 'mongo':
-        return new Mongo(this.options[connection]);
-        break;
-      case 'mysql':
-        break;
-      default: 
-        break;
+  validateOptions(){
+    if(this.options.host === undefined)
+      throw new Error('Database: You need to specify a host address to connect to!');
+
+    if(this.options.port === undefined)
+      throw new Error('Database: You need to specify which port your DB is running on!');
+
+    if(this.options.database === undefined)
+      throw new Error('Database: You need to specify which database to connect to!');
+  }
+
+  getDriver(){
+    if(this.driver === 'mongo' || this.driver === 'Mongo' ){
+      return new Mongo(this.options);
+    } else {
+      throw new Error(`Database: The specified database driver "${this.driver}" is not available.`);
     }
   }
-
+  
 }
+
 
 module.exports = Database;
