@@ -1,8 +1,8 @@
 'use strict';
 
-var MongoClient = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectID;
-var assert = require('assert');
+let MongoClient = require('mongodb').MongoClient;
+let ObjectId = require('mongodb').ObjectID;
+let assert = require('assert');
 
 class Mongo {
 
@@ -14,6 +14,9 @@ class Mongo {
     this.password = options.password;
     this.database = options.database;
 
+    this.Model = require('./MongoModel');
+    this.Model.bindDatabase(this);
+
     this.q = {
       collection: null,
       method: null,
@@ -23,11 +26,16 @@ class Mongo {
       limit: 0,
       callback: (err, result) => {}
     };
+
   }
 
 
   connect(){
-    var url = 'mongodb://'+this.host+':'+this.port+'/'+this.database;
+    let url = 'mongodb://'+this.host+':'+this.port+'/'+this.database;
+
+    if(!this.q.collection)
+      throw new Error('Database: No collection specified');
+
     MongoClient.connect(url, (err, db) => {
       assert.equal(null, err);
       this.query(db, () => {
@@ -39,8 +47,8 @@ class Mongo {
   query(db, done){
     switch(this.q.method){
       case 'find':
-        var cursor = db.collection(this.q.collection)[this.q.method](this.q.where).limit(this.q.limit).skip(this.q.skip).sort(this.q.sort);
-        var data = [];
+        let cursor = db.collection(this.q.collection)[this.q.method](this.q.where).limit(this.q.limit).skip(this.q.skip).sort(this.q.sort);
+        let data = [];
         cursor.each((err, doc) => {
           assert.equal(err, null);
           if (doc != null) {
@@ -84,14 +92,14 @@ class Mongo {
   }
 
   collection(name){
-    var db = new Mongo(this.options);
+    let db = new Mongo(this.options);
     db.q.collection = name;
     return db;
   }
 
 
   raw(callback){
-    var db = new Mongo(this.options);
+    let db = new Mongo(this.options);
     db.q.method = 'raw';
     db.q.callback = callback;
     db.connect();
@@ -106,8 +114,8 @@ class Mongo {
 
     if(key === '_id'){
       if(value instanceof Array){
-        var result = [];
-        for(var i = 0, item; item = value[i]; i++){ result.push(ObjectId(item)); }
+        let result = [];
+        for(let i = 0, item; item = value[i]; i++){ result.push(ObjectId(item)); }
         value = result;
       } else {
         value = ObjectId(value);
@@ -124,14 +132,14 @@ class Mongo {
   }
 
 
-  skip(obj){
-    this.q.skip = obj;
+  skip(num){
+    this.q.skip = num;
     return this;
   }
 
 
-  limit(obj){
-    this.q.limit = obj;
+  limit(num){
+    this.q.limit = num;
     return this;
   }
 
@@ -150,7 +158,7 @@ class Mongo {
     this.q.method = 'insert';
     this.q.callback = callback;
 
-    for(var i = 0; i < this.q.items.length; i++){
+    for(let i = 0; i < this.q.items.length; i++){
       this.q.items[i]._id = ObjectId();
     }
 
