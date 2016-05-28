@@ -6,3 +6,10 @@ node_js:
   - "4.2"
   - "4.1"
   - "4.0"
+
+services:
+  - mongodb
+
+before_script:
+  - sleep 15
+  - mongo mydb --eval 'db.addUser("specla", "password");'
