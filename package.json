@@ -1,6 +1,6 @@
 {
   "name": "specla-database",
-  "version": "0.0.3",
+  "version": "0.0.31",
   "description": "database module",
   "main": "index.js",
   "scripts": {

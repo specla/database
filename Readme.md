@@ -4,7 +4,7 @@
 
 This module is the database handler for the Specla Framework, its like Laravels
 Eloquent but just for javascript and MongoDB.
-> Please be aware that this is not in a state which is ready for release
+> Please be aware that this is not in a state where it's ready for production applications.  
 
 ### Setup
 To install specla-database all you have to do is to download it via npm.
