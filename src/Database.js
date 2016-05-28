@@ -5,7 +5,8 @@ var Mongo = require('./Mongo/QueryBuilder');
 class Database {
 
   constructor(options){
-    this.driver = options.driver || 'mongo';
+    options.driver = options.driver || 'mongo';
+    this.driver = options.driver;
     this.options = options;
 
     this.validateOptions();
