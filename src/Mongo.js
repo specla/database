@@ -10,8 +10,8 @@ class Mongo {
     this.options = options;
     this.host = options.host;
     this.port = options.port;
-    this.username = options.username;
-    this.password = options.password;
+    this.username = options.username || '';
+    this.password = options.password || '';
     this.database = options.database;
 
     this.Model = require('./MongoModel');
