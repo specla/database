@@ -22,13 +22,14 @@ class Model {
   }
 
   save(callback){
+    if(callback === undefined){
+      callback = () => {};
+    }
+
     if(this.data._id !== undefined){
       return this.update(callback);
     }
 
-    if(callback === undefined){
-      callback = () => {};
-    }
 
     this.DB.collection(this.collection()).insert(this.data, (err, result) => {
       this.data = result.ops[0];
@@ -37,14 +38,9 @@ class Model {
   }
 
   update(callback){
-    if(callback === undefined){
-      callback = () => {};
-    }
-
     let id = this.data._id;
     delete this.data._id;
     this.DB.collection(this.collection()).where('id', id).update(this.data, (err, result) => {
-      this.data = result.ops[0];
       callback(err, this);
     });
   }

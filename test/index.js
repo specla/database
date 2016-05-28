@@ -20,6 +20,14 @@ const Config = {
 
 const DB = new Database(Config[process.env.CONFIG || 'local']);
 
+class Item extends DB.Model {
+
+  collection(){
+    return 'items';
+  }
+
+}
+
 function setupDB(){
   DB.collection('items').remove(() => {
     let data = [];
@@ -159,7 +167,6 @@ describe('# Query Builder\n', () => {
           assert.equal(result[resultIndex].index, i);
           resultIndex++;
         }
-
         done();
       });
     });
@@ -187,6 +194,17 @@ describe('# Query Builder\n', () => {
     });
   });
 
+  describe('Register documents as models', () => {
+    it('Should turn database documents to models', (done) => {
+      DB.collection('items')
+        .model(Item)
+        .get((err, result) => {
+          assert.equal('Item', result[0].constructor.name);
+          done();
+        });
+    });
+  });
+
   describe('Raw mongo connection', () => {
     it('Should give you full access to the Mongo object', (done) => {
       DB.raw((db, close) => {
@@ -207,5 +225,52 @@ describe('# Query Builder\n', () => {
 });
 
 describe('# Model\n', () => {
+
+  let item = new Item({
+    name: 'testItem',
+  });
+
+  describe('Create item', () => {
+    it('Should create an item with the name testItem', (done) => {
+      item.save((err, item) => {
+        Item.find(item.get('_id'), (err, item) => {
+          assert.equal('testItem', item.get('name'));
+          done();
+        });
+      });
+    });
+  });
+
+  describe('Get/Set values', () => {
+    it('Should get the value', () => assert.equal('testItem', item.get('name')));
+    it('Should set the value', () => {
+      assert.equal('testItemUpdated', item.set('name', 'testItemUpdated').get('name'));
+    });
+  });
+
+  describe('Update model', () => {
+    it('Should update the model', (done) => {
+      Item.where('name', 'item-4').get((err, result) => {
+        result[0].set('name', 'item-4-updated');
+        result[0].save((err, model) => {
+          assert.equal('item-4-updated', model.get('name'));
+          done();
+        });
+      });
+    });
+  });
+
+  describe('Remove model', () => {
+    it('Should remove the model', (done) => {
+      Item.where('name', 'item-6').get((err, models) => {
+        models[0].delete((err) => {
+          Item.where('name', 'item-6').get((err, result) => {
+            assert.equal(0, result.length);
+            done();
+          });
+        });
+      });
+    });
+  });
 
 });
