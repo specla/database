@@ -225,7 +225,7 @@ describe('# Query Builder\n', () => {
 });
 
 describe('# Model\n', () => {
-
+  // TODO: Find a better way to test this
   let item = new Item({
     name: 'testItem',
   });
