@@ -136,14 +136,14 @@ user.save(() => {
 
 #### Find
 ```js
-User.find('5748aa5d45af47fc9909310b', (user) => {
+User.find('5748aa5d45af47fc9909310b', (err, user) => {
   // do something with the user
 });
 ```
 
 #### Update
 ```js
-User.find('5748aa5d45af47fc9909310b', (user) => {
+User.find('5748aa5d45af47fc9909310b', (err, user) => {
   user.set('name', 'Frederik');
   user.save(() => {
     // do something
@@ -153,7 +153,7 @@ User.find('5748aa5d45af47fc9909310b', (user) => {
 
 #### delete
 ```js
-User.find('5748aa5d45af47fc9909310b', (user) => {
+User.find('5748aa5d45af47fc9909310b', (err, user) => {
   user.delete(() => {
     // do something
   });
