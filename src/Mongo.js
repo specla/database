@@ -31,7 +31,7 @@ class Mongo {
 
 
   connect(){
-    let url = 'mongodb://'+this.username+':'+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
+    let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
 
     if(!this.q.collection)
       throw new Error('Database: No collection specified');
