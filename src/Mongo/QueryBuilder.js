@@ -34,8 +34,9 @@ class QueryBuilder {
   connect(){
     let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
 
-    if(!this.q.collection)
+    if(!this.q.collection && this.q.method !== 'raw'){
       throw new Error('Database: No collection specified');
+    }
 
     MongoClient.connect(url, (err, db) => {
       assert.equal(null, err);
@@ -112,7 +113,7 @@ class QueryBuilder {
 
 
   where(key, value){
-    if(typeof key == 'object'){
+    if(typeof key == 'object' && !(value instanceof Array)){
       this.q.where = key;
       return this;
     }
@@ -149,6 +150,7 @@ class QueryBuilder {
   }
 
   sort(key, order){
+    // TODO, should support multi sorting parameters
     this.q.sort[key] = (order == 'asc' || order == 'ASC' || order == 1 ? 1 : -1);
     return this;
   }
@@ -160,7 +162,7 @@ class QueryBuilder {
     }
 
     this.q.items = items;
-    this.q.method = 'insert';
+    this.q.method = (items.length > 1 ? 'insertMany' : 'insert');
     this.q.callback = callback;
 
     for(let i = 0; i < this.q.items.length; i++){
@@ -172,15 +174,15 @@ class QueryBuilder {
 
 
   update(set, callback){
-    this.q.method = 'update';
     this.q.set = set;
+    this.q.method = 'updateMany';
     this.q.callback = callback;
     this.connect();
   }
 
 
   remove(callback){
-    this.q.method = 'remove';
+    this.q.method = 'removeMany';
     this.q.callback = callback;
     this.connect();
   }
