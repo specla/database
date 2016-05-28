@@ -1,6 +1,6 @@
 'use strict';
 
-var Mongo = require('./Mongo');
+var Mongo = require('./Mongo/QueryBuilder');
 
 class Database {
 
@@ -30,7 +30,7 @@ class Database {
       throw new Error(`Database: The specified database driver "${this.driver}" is not available.`);
     }
   }
-  
+
 }
 
 
