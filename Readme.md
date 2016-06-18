@@ -9,7 +9,7 @@ Eloquent but just for javascript and MongoDB.
 ### Setup
 To install specla-database all you have to do is to download it via npm.
 ```sh
-npm install https://github.com/Specla/Database --save
+npm install specla-database --save
 ```
 ```js
 let Database = require('specla-database');

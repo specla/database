@@ -1,8 +1,8 @@
 {
   "name": "specla-database",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "database module",
-  "main": "index.js",
+  "main": "src/Database.js",
   "scripts": {
     "test": "mocha test/index.js"
   },
