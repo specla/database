@@ -6,7 +6,9 @@ This module is the database handler for the Specla Framework, its like Laravels
 Eloquent but just for javascript and MongoDB.
 > Please be aware that this is not in a state where it's ready for production applications.  
 
+
 ### Setup
+
 To install specla-database all you have to do is to download it via npm.
 ```sh
 npm install specla-database --save
@@ -22,11 +24,12 @@ const DB = new Database({
 });
 ```
 
+
 # Usage
 Specla database includes two modules the `Query builder` and the `DB.Model`.
 
-# Query builder
 
+# Query builder
 
 #### Fetch data
 ```js
@@ -163,6 +166,8 @@ User.find('5748aa5d45af47fc9909310b', (err, user) => {
 ## TODO
   - Schema validation
   - Mongo
+    - Stream results <br>
+      `DB.collection('users').stream((err, item) => item).result()`
     - Advanced wheres
     - Agregates
     - Joins
