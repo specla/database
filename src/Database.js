@@ -17,9 +17,6 @@ class Database {
     if(this.options.host === undefined)
       throw new Error('Database: You need to specify a host address to connect to!');
 
-    if(this.options.port === undefined)
-      throw new Error('Database: You need to specify which port your DB is running on!');
-
     if(this.options.database === undefined)
       throw new Error('Database: You need to specify which database to connect to!');
   }
