@@ -41,7 +41,8 @@ class QueryBuilder {
    * @return {void}
    */
   connect(){
-    let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database+'?authSource=admin';
+    // NOTE its should be posible to set the auth source to something different then the db ?authSource=admin
+    let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
 
     if(!this.q.collection && this.q.method !== 'raw'){
       throw new Error('Database: No collection specified');
