@@ -145,25 +145,6 @@ class QueryBuilder {
   }
 
   /**
-   * Define schema
-   * @param  {object} schema
-   * @return {DB}
-   */
-  schema(schema){
-    this.q.schema = schema;
-    return this;
-  }
-
-  /**
-   * Validate the defined schema against the data
-   * @param  {object} data
-   * @return {void}
-   */
-  validate(data){
-    //console.log(data);
-  }
-
-  /**
    * Construct where statement
    * @param  {string|object}    key
    * @param  {string|undefined} value
@@ -236,8 +217,6 @@ class QueryBuilder {
     if(callback === undefined){
       callback = (err, result) => {};
     }
-
-    this.validate(items);
 
     this.q.items = items;
     this.q.method = (items.length > 1 ? 'insertMany' : 'insert');
