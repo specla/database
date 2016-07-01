@@ -34,7 +34,17 @@ Specla database includes two modules the `Query builder` and the `DB.Model`.
 #### Fetch data
 ```js
 DB.collection('users').get((err, result) => {
+  // Return all users at once
+});
+```
+
+#### Stream data
+```js
+DB.collection('users').stream((user) => {
   // do something with the data
+  return user;
+}).done((result) => {
+  // returns the streamed data in an array
 });
 ```
 
