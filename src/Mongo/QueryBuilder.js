@@ -52,7 +52,11 @@ class QueryBuilder {
       MongoClient.connect(url, (err, db) => {
         assert.equal(null, err);
         this.db = db;
-        this.close = db.close;
+        this.close = () => {
+          this.db = null;
+          this.db.close();
+          this.close = null;
+        };
         this.query(db, () => {});
       });
     } else {
