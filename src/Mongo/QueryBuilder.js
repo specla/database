@@ -22,6 +22,9 @@ class QueryBuilder {
     this.Model = require('./Model');
     this.Model.bindDatabase(this);
 
+    this.db = null;
+    this.close = null;
+
     this.q = {
       collection: null,
       schema: {},
@@ -44,16 +47,17 @@ class QueryBuilder {
     // NOTE its should be posible to set the auth source to something different then the db ?authSource=admin
     let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
 
-    if(!this.q.collection && this.q.method !== 'raw'){
-      throw new Error('Database: No collection specified');
-    }
-
-    MongoClient.connect(url, (err, db) => {
-      assert.equal(null, err);
-      this.query(db, () => {
-        db.close();
+    // connnect and set a persistent connection
+    if(this.db === null){
+      MongoClient.connect(url, (err, db) => {
+        assert.equal(null, err);
+        this.db = db;
+        this.close = db.close;
+        this.query(db, () => {});
       });
-    });
+    } else {
+      this,query(this.db, () => {});
+    }
   }
 
   /**
