@@ -47,7 +47,6 @@ class QueryBuilder {
    * @return {void}
    */
   connect(){
-    // NOTE its should be posible to set the auth source to something different then the db ?authSource=admin
     let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database+(this.authSource !== undefined ? '?authSource='+this.authSource : '');
 
     // connnect and set a persistent connection
