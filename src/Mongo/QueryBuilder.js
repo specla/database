@@ -22,7 +22,9 @@ class QueryBuilder {
     this.Model = require('./Model');
     this.Model.bindDatabase(this);
 
-    this.db = null;
+    this._db = null;
+    this._stream = null;
+    this._result = [];
     this.close = null;
 
     this.q = {
@@ -48,19 +50,19 @@ class QueryBuilder {
     let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
 
     // connnect and set a persistent connection
-    if(this.db === null){
+    if(this._db === null){
       MongoClient.connect(url, (err, db) => {
         assert.equal(null, err);
-        this.db = db;
+        this._db = db;
         this.close = () => {
-          this.db = null;
-          this.db.close();
+          this._db = null;
+          this._db.close();
           this.close = null;
         };
         this.query(db, () => {});
       });
     } else {
-      this,query(this.db, () => {});
+      this,query(this._db, () => {});
     }
   }
 
@@ -87,6 +89,12 @@ class QueryBuilder {
             this.q.callback(err, this.registerModels(data));
             done();
           }
+        });
+        break;
+      case 'stream':
+        this._stream = db.collection(this.q.collection).find(this.q.where).stream();
+        this._stream.on('data', (data) => {
+          this._result.push(this.q.callback(data));
         });
         break;
       case 'insert':
@@ -142,25 +150,6 @@ class QueryBuilder {
     db.q.method = 'raw';
     db.q.callback = callback;
     db.connect();
-  }
-
-  /**
-   * Define schema
-   * @param  {object} schema
-   * @return {DB}
-   */
-  schema(schema){
-    this.q.schema = schema;
-    return this;
-  }
-
-  /**
-   * Validate the defined schema against the data
-   * @param  {object} data
-   * @return {void}
-   */
-  validate(data){
-    //console.log(data);
   }
 
   /**
@@ -237,8 +226,6 @@ class QueryBuilder {
       callback = (err, result) => {};
     }
 
-    this.validate(items);
-
     this.q.items = items;
     this.q.method = (items.length > 1 ? 'insertMany' : 'insert');
     this.q.callback = callback;
@@ -283,6 +270,35 @@ class QueryBuilder {
     this.q.method = 'find';
     this.q.callback = callback;
     this.connect();
+  }
+
+  /**
+   * Stream data from mongo
+   * @param  {Function}  callback
+   * @return {DB}
+   */
+  stream(callback){
+    this.q.method = 'stream';
+    this.q.callback = callback;
+    this.connect();
+    return this;
+  }
+
+  /**
+   * Register the end event at return the streaming result
+   * @param  {Function} callback
+   * @return {void}
+   */
+  done(callback){
+    let int = setInterval(() => {
+      try {
+        this._stream.once('end', () => {
+          callback(this._result);
+        });
+
+        clearInterval(int);
+      } catch(err){}
+    }, 1);
   }
 
   /**

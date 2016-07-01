@@ -156,6 +156,21 @@ describe('# Query Builder\n', () => {
         done();
       });
     });
+
+    it('Should stream documents', () => {
+      let count = 0;
+      let values = ['item-1', 'item-2', 'item-5'];
+      DB.collection('items').where('name', values).stream((item) => {
+        assert.equal(values[count], item.name);
+        count++;
+        return item;
+      }).done((result) => {
+        assert.equal(3, result.length);
+        assert.equal('item-1', result[0].name);
+        assert.equal('item-2', result[1].name);
+        assert.equal('item-5', result[2].name);
+      });
+    });
   });
 
   describe('Sort documents', () => {
@@ -221,7 +236,6 @@ describe('# Query Builder\n', () => {
       });
     });
   });
-
 });
 
 describe('# Model\n', () => {
