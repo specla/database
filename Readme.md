@@ -181,8 +181,6 @@ DB.close();
 ## TODO
   - Schema validation
   - Mongo
-    - Stream results <br>
-      `DB.collection('users').stream((err, item) => item).result()`
     - Advanced wheres
     - Agregates
     - Joins
