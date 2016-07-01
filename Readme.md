@@ -164,7 +164,7 @@ User.find('5748aa5d45af47fc9909310b', (err, user) => {
 ```
 
 #### Close the connection
-```
+```js
 DB.close();
 ```
 
