@@ -223,7 +223,7 @@ class QueryBuilder {
    * @return {void}
    */
   insert(items, callback){
-    if(!this.validate(items)){
+    if(!this.validate(items, callback)){
       return false;
     }
 
@@ -249,7 +249,7 @@ class QueryBuilder {
    * @return {void}
    */
   update(set, callback){
-    if(!this.validate(set)){
+    if(!this.validate(set, callback)){
       return false;
     }
 
@@ -323,17 +323,22 @@ class QueryBuilder {
   /**
    * Validate the data against the schema
    * @param  {object|array} data
+   * @param  {closure} callback
    * @return {boolean}
    */
-  validate(data){
+  validate(data, callback){
     if(this.q.schema === null){
       return true;
+    }
+
+    if(callback === undefined){
+      callback = () => {};
     }
 
     let validator = new Validator(this.q.schema, data);
 
     if(validator.errors.length){
-      console.log(validator.errors);
+      callback(validator.errors, null);
       return false;
     } else {
       return true;
