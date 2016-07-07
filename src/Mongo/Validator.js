@@ -1,9 +1,3 @@
-class Optional {
-
-}
-
-global.Optional = Optional;
-
 class Validator {
 
   constructor(schema, data){
