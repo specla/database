@@ -59,17 +59,19 @@ let schema = {
   admin: Boolean,
 };
 
+let data = {
+  name: 'Frederik',
+  age: 22,
+  address: {
+    city: 'Odense',
+  },
+  skills: ['Javascript'],
+  admin: true
+};
+
 DB.collection('users')
   .schema(schema)
-  .insert({
-    name: 'Frederik',
-    age: 22,
-    address: {
-      city: 'Odense',
-    },
-    skills: ['Javascript'],
-    admin: true
-  }, (err, result) => {
+  .insert(data, (err, result) => {
     // do something when the operation is completed
   });
 ```
