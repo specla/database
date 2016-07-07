@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const Database = require('../');
+const Validator = require('../src/Mongo/Validator');
 
 const Config = {
   travis: {
@@ -24,6 +25,20 @@ class Item extends DB.Model {
 
   collection(){
     return 'items';
+  }
+
+}
+
+class ItemWithSchema extends DB.Model {
+
+  collection(){
+    return 'items';
+  }
+
+  schema(){
+    return {
+      name: String
+    }
   }
 
 }
@@ -220,6 +235,20 @@ describe('# Query Builder\n', () => {
     });
   });
 
+  describe('Validate data agaist schema before its send to mongo', () => {
+    it('Should insert document matching the schema', (done) => {
+      DB.collection('items')
+        .schema({ name: String, number: Number })
+        .insert({ name: 'hello', number: 1 }, (err, result) => {
+          assert.equal(false, DB.collection('items').schema({ name: String, number: Number }).insert({ name: 'hello', number: '1' }));
+          DB.collection('items').where('name', 'hello').get((err, result) => {
+            assert.equal(1, result.length);
+            done();
+          });
+        });
+    });
+  });
+
   describe('Raw mongo connection', () => {
     it('Should give you full access to the Mongo object', (done) => {
       DB.raw((db, close) => {
@@ -274,6 +303,18 @@ describe('# Model\n', () => {
     });
   });
 
+  describe('Test model with schema', () => {
+    it('Should insert a new model matching the schema', (done) => {
+      let itemWithSchema = new ItemWithSchema({ name: 'testing with schema' });
+      itemWithSchema.save(() => {
+        Item.where('name', 'testing with schema').get((err, result) => {
+          assert.equal('testing with schema', result[0].get('name'));
+          done();
+        });
+      });
+    });
+  });
+
   describe('Remove model', () => {
     it('Should remove the model', (done) => {
       Item.where('name', 'item-6').get((err, models) => {
@@ -285,6 +326,62 @@ describe('# Model\n', () => {
         });
       });
     });
+  });
+});
+
+
+describe('# Schema validation', () => {
+
+  it('Should accept a string', () =>  {
+    assert.equal(0, new Validator({ item: String }, { item: 'test' }).errors.length);
+    assert.equal(1, new Validator({ item: String }, { item: ['test'] }).errors.length);
+    assert.equal(1, new Validator({ item: String }, { item: {test: 'test'} }).errors.length);
+    assert.equal(1, new Validator({ item: String }, { item: 43 }).errors.length);
+    assert.equal(1, new Validator({ item: String }, { item: true }).errors.length);
+  });
+
+  it('Should accept a number', () =>  {
+    assert.equal(0, new Validator({ item: Number }, { item: 1 }).errors.length);
+    assert.equal(1, new Validator({ item: Number }, { item: '1' }).errors.length);
+    assert.equal(1, new Validator({ item: Number }, { item: ['1'] }).errors.length);
+    assert.equal(1, new Validator({ item: Number }, { item: {test: '1'} }).errors.length);
+    assert.equal(1, new Validator({ item: Number }, { item: true }).errors.length);
+  });
+
+  it('Should accept a boolean', () =>  {
+    assert.equal(0, new Validator({ item: Boolean }, { item: true }).errors.length);
+    assert.equal(1, new Validator({ item: Boolean }, { item: '1' }).errors.length);
+    assert.equal(1, new Validator({ item: Boolean }, { item: 1 }).errors.length);
+    assert.equal(1, new Validator({ item: Boolean }, { item: {test: '1'} }).errors.length);
+    assert.equal(1, new Validator({ item: Boolean }, { item: ['test'] }).errors.length);
+  });
+
+  it('Should accept a array', () =>  {
+    assert.equal(0, new Validator({ item: Array }, { item: ['test', 'test2'] }).errors.length);
+    assert.equal(1, new Validator({ item: Array }, { item: '1' }).errors.length);
+    assert.equal(1, new Validator({ item: Array }, { item: 325 }).errors.length);
+    assert.equal(1, new Validator({ item: Array }, { item: {test: '1'} }).errors.length);
+    assert.equal(1, new Validator({ item: Array }, { item: true }).errors.length);
+  });
+
+  it('Should accept a object', () =>  {
+    assert.equal(0, new Validator({ item: Object }, { item: { test: 'test' } }).errors.length);
+    assert.equal(1, new Validator({ item: Object }, { item: '1' }).errors.length);
+    assert.equal(1, new Validator({ item: Object }, { item: 325 }).errors.length);
+    assert.equal(1, new Validator({ item: Object }, { item: ['test'] }).errors.length);
+    assert.equal(1, new Validator({ item: Object }, { item: true }).errors.length);
+  });
+
+  it('Should accept a nested object', () =>  {
+    assert.equal(0, new Validator({ item: { name: String } }, { item: { name: 'test' } }).errors.length);
+    assert.equal(1, new Validator({ item: { name: String } }, { item: { name: 1 } }).errors.length);
+    assert.equal(1, new Validator({ item: { name: String } }, { item: [{ name: 'test' }] }).errors.length);
+  });
+
+  it('Should accept a nested array with objects', () =>  {
+    assert.equal(0, new Validator({ item: [{ name: String }] }, { item: [{ name: 'test' }] }).errors.length);
+    assert.equal(1, new Validator({ item: [{ name: String }] }, { item: [{ name: 1 }] }).errors.length);
+    assert.equal(1, new Validator({ item: [{ name: String }] }, { item: { name: 'test' } }).errors.length);
   });
 
 });
