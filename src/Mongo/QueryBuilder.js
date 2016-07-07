@@ -18,6 +18,7 @@ class QueryBuilder {
     this.username = options.username || '';
     this.password = options.password || '';
     this.database = options.database;
+    this.authSource = options.authSource;
 
     this.Model = require('./Model');
     this.Model.bindDatabase(this);
@@ -46,8 +47,7 @@ class QueryBuilder {
    * @return {void}
    */
   connect(){
-    // NOTE its should be posible to set the auth source to something different then the db ?authSource=admin
-    let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database;
+    let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database+(this.authSource !== undefined ? '?authSource='+this.authSource : '');
 
     // connnect and set a persistent connection
     if(this._db === null){
