@@ -121,9 +121,9 @@ class Validator {
         }
 
         // TODO finish object
-        // if(this.isObject(schema[key])){
-        //   this.validate(schema[key], this.data[key]);
-        // }
+        if(this.isObject(schema[key])){
+          this.validate(schema[key], item[key]);
+        }
       }
 
       this.compare(item, schema);
