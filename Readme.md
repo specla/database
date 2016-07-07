@@ -47,6 +47,35 @@ DB.collection('users').stream((user) => {
 });
 ```
 
+#### Validate against schema
+```js
+let schema = {
+  name: String,
+  age: Number,
+  address: {
+    city: String,
+  },
+  skills: Array,
+  admin: Boolean,
+};
+
+let data = {
+  name: 'Frederik',
+  age: 22,
+  address: {
+    city: 'Odense',
+  },
+  skills: ['Javascript'],
+  admin: true
+};
+
+DB.collection('users')
+  .schema(schema)
+  .insert(data, (err, result) => {
+    // do something when the operation is completed
+  });
+```
+
 #### Wheres
 ```js
 DB.collection('users')
@@ -133,6 +162,14 @@ class User extends DB.Model {
     return 'users';
   }
 
+  // the schema is optional
+  schema(){
+    return {
+      name: String,
+      age: Number
+    };
+  }
+
 }
 ```
 
@@ -172,13 +209,7 @@ User.find('5748aa5d45af47fc9909310b', (err, user) => {
 });
 ```
 
-#### Close the connection
-```js
-DB.close();
-```
-
 ## TODO
-  - Schema validation
   - Mongo
     - Advanced wheres
     - Agregates

@@ -7,6 +7,10 @@ class Model {
     this.data = data || {};
   }
 
+  schema(){
+    return null;
+  }
+
   static bindDatabase(DB){
     this.DB = DB;
     return this;
@@ -31,7 +35,7 @@ class Model {
     }
 
 
-    this.DB.collection(this.collection()).insert(this.data, (err, result) => {
+    this.DB.collection(this.collection()).schema(this.schema()).insert(this.data, (err, result) => {
       this.data = result.ops[0];
       callback(err, this);
     });
@@ -40,7 +44,7 @@ class Model {
   update(callback){
     let id = this.data._id;
     delete this.data._id;
-    this.DB.collection(this.collection()).where('id', id).update(this.data, (err, result) => {
+    this.DB.collection(this.collection()).schema(this.schema()).where('id', id).update(this.data, (err, result) => {
       callback(err, this);
     });
   }
@@ -54,7 +58,7 @@ class Model {
       callback = () => {};
     }
 
-    this.DB.collection(this.collection()).where('_id', this.data._id).remove((err, result) => {
+    this.DB.collection(this.collection()).schema(this.schema()).where('_id', this.data._id).remove((err, result) => {
       callback(err, result)
     });
   }
@@ -62,7 +66,7 @@ class Model {
   static find(id, callback){
     let model = new this;
 
-    model.DB.collection(model.collection()).model(this).where('_id', id).get((err, result) => {
+    model.DB.collection(model.collection()).schema(model.schema()).model(this).where('_id', id).get((err, result) => {
       callback(err, result[0]);
     });
   }
@@ -70,7 +74,7 @@ class Model {
   static all(callback){
     let model = new this;
 
-    model.DB.collection(model.collection()).model(this).get((err, items) => {
+    model.DB.collection(model.collection()).schema(model.schema()).model(this).get((err, items) => {
       callback(err, items);
     });
   }
@@ -81,37 +85,37 @@ class Model {
 
   static where(key, value){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).where(key, value);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).where(key, value);
   }
 
   static sort(key, order){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).sort(key, order);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).sort(key, order);
   }
 
   static skip(num){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).skip(num);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).skip(num);
   }
 
   static limit(num){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).limit(num);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).limit(num);
   }
 
   static insert(data, callback){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).insert(data, callback);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).insert(data, callback);
   }
 
   static update(callback){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).update(callback);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).update(callback);
   }
 
   static remove(callback){
     let model = new this;
-    return model.DB.collection(model.collection()).model(this).remove(callback);
+    return model.DB.collection(model.collection()).schema(model.schema()).model(this).remove(callback);
   }
 
 }
