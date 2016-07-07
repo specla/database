@@ -121,7 +121,7 @@ class Validator {
         }
 
         // TODO finish object
-        if(this.isObject(schema[key])){
+        if(this.isObject(schema[key]) && Object.keys(schema[key]).length > 0){
           this.validate(schema[key], item[key]);
         }
       }
