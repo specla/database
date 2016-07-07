@@ -47,6 +47,33 @@ DB.collection('users').stream((user) => {
 });
 ```
 
+#### Validate against schema
+```js
+let schema = {
+  name: String,
+  age: Number,
+  address: {
+    city: String,
+  },
+  skills: Array,
+  admin: Boolean,
+};
+
+DB.collection('users')
+  .schema(schema)
+  .insert({
+    name: 'Frederik',
+    age: 22,
+    address: {
+      city: 'Odense',
+    },
+    skills: ['Javascript'],
+    admin: true
+  }, (err, result) => {
+    // do something when the operation is completed
+  });
+```
+
 #### Wheres
 ```js
 DB.collection('users')
@@ -131,6 +158,14 @@ class User extends DB.Model {
 
   collection(){
     return 'users';
+  }
+
+  // the schema is optional
+  schema(){
+    return {
+      name: String,
+      age: Number
+    };
   }
 
 }
