@@ -3,6 +3,7 @@
 let MongoClient = require('mongodb').MongoClient;
 let ObjectId = require('mongodb').ObjectID;
 let assert = require('assert');
+let Validator = require('./Validator');
 
 class QueryBuilder {
 
@@ -30,7 +31,7 @@ class QueryBuilder {
 
     this.q = {
       collection: null,
-      schema: {},
+      schema: null,
       model: null,
       method: null,
       where: {},
@@ -164,7 +165,7 @@ class QueryBuilder {
       return this;
     }
 
-    if(key === '_id'){
+    if(key === '_id' || key === 'id'){
       if(value instanceof Array){
         let result = [];
         for(let i = 0, item; item = value[i]; i++){ result.push(ObjectId(item)); }
@@ -222,6 +223,10 @@ class QueryBuilder {
    * @return {void}
    */
   insert(items, callback){
+    if(!this.validate(items)){
+      return false;
+    }
+
     if(callback === undefined){
       callback = (err, result) => {};
     }
@@ -244,6 +249,10 @@ class QueryBuilder {
    * @return {void}
    */
   update(set, callback){
+    if(!this.validate(set)){
+      return false;
+    }
+
     this.q.set = set;
     this.q.method = 'updateMany';
     this.q.callback = callback;
@@ -299,6 +308,36 @@ class QueryBuilder {
         clearInterval(int);
       } catch(err){}
     }, 1);
+  }
+
+  /**
+   * Set the schema to validate against
+   * @param  {object} schema
+   * @return {DB}
+   */
+  schema(schema){
+    this.q.schema = schema;
+    return this;
+  }
+
+  /**
+   * Validate the data against the schema
+   * @param  {object|array} data
+   * @return {boolean}
+   */
+  validate(data){
+    if(this.q.schema === null){
+      return true;
+    }
+
+    let validator = new Validator(this.q.schema, data);
+
+    if(validator.errors.length){
+      console.log(validator.errors);
+      return false;
+    } else {
+      return true;
+    }
   }
 
   /**
