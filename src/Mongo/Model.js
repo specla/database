@@ -44,7 +44,7 @@ class Model {
   update(callback){
     let id = this.data._id;
     delete this.data._id;
-    this.DB.collection(this.collection()).schema(this.schema()).where('id', id).update(this.data, (err, result) => {
+    this.DB.collection(this.collection()).schema(this.schema()).where('_id', id).update(this.data, (err, result) => {
       callback(err, this);
     });
   }
