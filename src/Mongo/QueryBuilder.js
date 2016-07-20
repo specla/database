@@ -166,6 +166,7 @@ class QueryBuilder {
     }
 
     if(key === '_id' || key === 'id'){
+      key = '_id';
       if(value instanceof Array){
         let result = [];
         for(let i = 0, item; item = value[i]; i++){ result.push(ObjectId(item)); }
