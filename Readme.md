@@ -210,8 +210,11 @@ User.find('5748aa5d45af47fc9909310b', (err, user) => {
 ```
 
 ## TODO
+  - Validation
+    - Dates?
   - Mongo
     - Advanced wheres
     - Agregates
     - Joins
+    - Model events
   - Mysql(maybe later)
