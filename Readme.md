@@ -178,7 +178,7 @@ class User extends DB.Model {
 let user = new User;
 user.set('name', 'John');
 user.save(() => {
-  // do something when you user is created
+  // do something when your user is created
   console.log(user.get('_id'));
 });
 ```
