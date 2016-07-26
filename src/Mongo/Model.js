@@ -2,13 +2,23 @@
 
 class Model {
 
+  /**
+   * Construct new user
+   * @param  {Object} data
+   * @return {Model}
+   */
   constructor(data){
     this.DB = Model.DB;
     this.data = data || {};
   }
 
+  /**
+   * The connected mongo collection
+   * @return {[type]} [description]
+   */
   collection(){
-    return this.constructor.name.toLowerCase()+'s';
+    let name = this.constructor.name;
+    return name.charAt(0).toLowerCase() + name.slice(1) + 's';
   }
 
   schema(){
