@@ -7,6 +7,10 @@ class Model {
     this.data = data || {};
   }
 
+  collection(){
+    return this.constructor.name.toLowerCase()+'s';
+  }
+
   schema(){
     return null;
   }
