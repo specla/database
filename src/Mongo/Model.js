@@ -20,14 +20,31 @@ class Model {
     return this;
   }
 
+  get(key){
+    if(key === undefined){
+      return this.data;
+    } else {
+      return this.data[key];
+    }
+  }
+
   set(key, value){
-    this.data[key] = value;
+    if(!key && !value){
+      return this;
+    }
+
+    if(value === undefined && typeof key === 'object'){
+      if(this.data._id !== undefined){
+        key._id = this.data._id;
+      }
+
+      this.data = key;
+    } else {
+      this.data[key] = value;
+    }
     return this;
   }
 
-  get(key){
-    return this.data[key];
-  }
 
   save(callback){
     if(callback === undefined){
