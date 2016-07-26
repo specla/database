@@ -9,8 +9,8 @@ class QueryBuilder {
 
   /**
    * Setup the DB client
-   * @param  {object} options
-   * @return {void}
+   * @param  {Object} options
+   * @return {QueryBuilder}
    */
   constructor(options){
     this.options = options;
@@ -45,7 +45,7 @@ class QueryBuilder {
 
   /**
    * Run the constructed query
-   * @return {void}
+   * @return {Undefined}
    */
   connect(){
     let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database+(this.authSource !== undefined ? '?authSource='+this.authSource : '');
@@ -63,15 +63,15 @@ class QueryBuilder {
         this.query(db, () => {});
       });
     } else {
-      this,query(this._db, () => {});
+      this.query(this._db, () => {});
     }
   }
 
   /**
    * Construct the query for mongo
-   * @param  {db}   db   the mongo db object
-   * @param  {done} done this function closes the mongo connection
-   * @return {void}
+   * @param  {Object}   db   the mongo db object
+   * @param  {Function} done this function closes the mongo connection
+   * @return {Undefined}
    */
   query(db, done){
     if(this.q.callback === undefined){
@@ -132,8 +132,8 @@ class QueryBuilder {
 
   /**
    * Define which collection the query should be run in
-   * @param  {[type]} name [description]
-   * @return {[type]}      [description]
+   * @param  {String} name
+   * @return {QueryBuilder}
    */
   collection(name){
     let db = new QueryBuilder(this.options);
@@ -144,7 +144,7 @@ class QueryBuilder {
   /**
    * Access the raw mongo object with the method
    * @param  {Function} callback
-   * @return {void}
+   * @return {Undefined}
    */
   raw(callback){
     let db = new QueryBuilder(this.options);
@@ -155,9 +155,9 @@ class QueryBuilder {
 
   /**
    * Construct where statement
-   * @param  {string|object}    key
-   * @param  {string|undefined} value
-   * @return {this}
+   * @param  {String|Object}    key
+   * @param  {String|Undefined} value
+   * @return {QueryBuilder}
    */
   where(key, value){
     if(typeof key == 'object' && !(value instanceof Array)){
@@ -187,8 +187,8 @@ class QueryBuilder {
 
   /**
    * Construct skip statement
-   * @param  {number} num
-   * @return {this}
+   * @param  {Number} num
+   * @return {QueryBuilder}
    */
   skip(num){
     this.q.skip = num;
@@ -197,8 +197,8 @@ class QueryBuilder {
 
   /**
    * Construct limit statement
-   * @param  {number} num
-   * @return {this}
+   * @param  {Number} num
+   * @return {QueryBuilder}
    */
   limit(num){
     this.q.limit = num;
@@ -207,9 +207,9 @@ class QueryBuilder {
 
   /**
    * Construct short statement
-   * @param  {string} key
-   * @param  {string} order
-   * @return {this}
+   * @param  {String} key
+   * @param  {String} order
+   * @return {QueryBuilder}
    */
   sort(key, order){
     // TODO, should support multi sorting parameters
@@ -219,9 +219,9 @@ class QueryBuilder {
 
   /**
    * Construct insert statement
-   * @param  {object|array} items
+   * @param  {Object|Array} items
    * @param  {Function}     callback
-   * @return {void}
+   * @return {Undefined}
    */
   insert(items, callback){
     if(!this.validate(items, callback)){
@@ -245,9 +245,9 @@ class QueryBuilder {
 
   /**
    * Construct update statement
-   * @param  {object|array} items
+   * @param  {Object|Array} items
    * @param  {Function}     callback
-   * @return {void}
+   * @return {Undefined}
    */
   update(set, callback){
     if(!this.validate(set, callback)){
@@ -263,7 +263,7 @@ class QueryBuilder {
   /**
    * Construct remove statement
    * @param  {Function}  callback
-   * @return {void}
+   * @return {Undefined}
    */
   remove(callback){
     this.q.method = 'removeMany';
@@ -274,7 +274,7 @@ class QueryBuilder {
   /**
    * Get the full data set from DB
    * @param  {Function}  callback
-   * @return {void}
+   * @return {Undefined}
    */
   get(callback){
     this.q.method = 'find';
@@ -297,7 +297,7 @@ class QueryBuilder {
   /**
    * Register the end event at return the streaming result
    * @param  {Function} callback
-   * @return {void}
+   * @return {Undefined}
    */
   done(callback){
     let int = setInterval(() => {
@@ -313,7 +313,7 @@ class QueryBuilder {
 
   /**
    * Set the schema to validate against
-   * @param  {object} schema
+   * @param  {Object} schema
    * @return {DB}
    */
   schema(schema){
@@ -323,7 +323,7 @@ class QueryBuilder {
 
   /**
    * Validate the data against the schema
-   * @param  {object|array} data
+   * @param  {Object|Array} data
    * @param  {closure} callback
    * @return {boolean}
    */
@@ -348,8 +348,8 @@ class QueryBuilder {
 
   /**
    * Register return data as models
-   * @param  {object|array} items
-   * @return {void}
+   * @param  {Object|Array} items
+   * @return {Undefined}
    */
   registerModels(data){
     if(!this.q.model){
@@ -368,8 +368,8 @@ class QueryBuilder {
 
   /**
    * Set the model type as a query statement
-   * @param  {object} model
-   * @return {void}
+   * @param  {Object} model
+   * @return {Undefined}
    */
   model(model){
     this.q.model = model;
@@ -379,6 +379,6 @@ class QueryBuilder {
 
 /**
  * Export the query builder
- * @type {object} QueryBuilder
+ * @type {Object} QueryBuilder
  */
 module.exports = QueryBuilder;

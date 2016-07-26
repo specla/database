@@ -4,8 +4,8 @@ class Validator {
 
   /**
    * Create new validator instance
-   * @param  {object} schema
-   * @param  {mixed}  data
+   * @param  {Object} schema
+   * @param  {Mixed}  data
    * @return {Validator}
    */
   constructor(schema, data){
@@ -18,7 +18,7 @@ class Validator {
 
   /**
    * Is the value a string?
-   * @param  {mixed}  value
+   * @param  {Mixed}  value
    * @return {Boolean}
    */
   isString(value){
@@ -27,7 +27,7 @@ class Validator {
 
   /**
    * Is the value a number
-   * @param  {mixed}  value
+   * @param  {Mixed}  value
    * @return {Boolean}
    */
   isNumber(value){
@@ -36,7 +36,7 @@ class Validator {
 
   /**
    * Is the value a boolean
-   * @param  {mixed}  value
+   * @param  {Mixed}  value
    * @return {Boolean}
    */
   isBoolean(value){
@@ -45,7 +45,7 @@ class Validator {
 
   /**
    * Is the value an array
-   * @param  {mixed}  value
+   * @param  {Mixed}  value
    * @return {Boolean}
    */
   isArray(value){
@@ -54,7 +54,7 @@ class Validator {
 
   /**
    * Is the value an object
-   * @param  {mixed}  value
+   * @param  {Mixed}  value
    * @return {Boolean}
    */
   isObject(value){
@@ -63,8 +63,8 @@ class Validator {
 
   /**
    * Check if a key is in the schema
-   * @param  {string}   key
-   * @param  {mixed}    schema
+   * @param  {String}   key
+   * @param  {Mixed}    schema
    * @return {Boolean}
    */
   isKeyInSchema(key, schema){
@@ -78,9 +78,9 @@ class Validator {
 
   /**
    * Validate a value as a string
-   * @param  {string} key
-   * @param  {mixed}  value
-   * @return {void}
+   * @param  {String} key
+   * @param  {Mixed}  value
+   * @return {Undefined}
    */
   validateString(key, value){
     if(!this.isString(value)){
@@ -90,9 +90,9 @@ class Validator {
 
   /**
    * Validate a value as a number
-   * @param  {string} key
-   * @param  {mixed}  value
-   * @return {void}
+   * @param  {String} key
+   * @param  {Mixed}  value
+   * @return {Undefined}
    */
   validateNumber(key, value){
     if(!this.isNumber(value)){
@@ -102,9 +102,9 @@ class Validator {
 
   /**
    * Validate a value as a boolean
-   * @param  {string} key
-   * @param  {mixed}  value
-   * @return {void}
+   * @param  {String} key
+   * @param  {Mixed}  value
+   * @return {Undefined}
    */
   validateBoolean(key, value){
     if(!this.isBoolean(value)){
@@ -114,9 +114,9 @@ class Validator {
 
   /**
    * Validate a value as an array
-   * @param  {string} key
-   * @param  {mixed}  value
-   * @return {void}
+   * @param  {String} key
+   * @param  {Mixed}  value
+   * @return {Undefined}
    */
   validateArray(key, value){
     if(!this.isArray(value)){
@@ -126,9 +126,9 @@ class Validator {
 
   /**
    * Validate a value as an object
-   * @param  {string} key
-   * @param  {mixed}  value
-   * @return {void}
+   * @param  {String} key
+   * @param  {Mixed}  value
+   * @return {Undefined}
    */
   validateObject(key, value){
     if(!this.isObject(value)){
@@ -138,9 +138,9 @@ class Validator {
 
   /**
    * Compare the data against the schema
-   * @param  {mixed} item
-   * @param  {mixed} schema
-   * @return {void}
+   * @param  {Mixed} item
+   * @param  {Mixed} schema
+   * @return {Undefined}
    */
   compare(item, schema){
     for(let key in schema){
@@ -169,9 +169,9 @@ class Validator {
 
   /**
    * Validate the schema against the base data
-   * @param  {mixed} schema
-   * @param  {mixed} data
-   * @return {void}
+   * @param  {Mixed} schema
+   * @param  {Mixed} data
+   * @return {Undefined}
    */
   validate(schema, data){
     if(this.isArray(schema)){

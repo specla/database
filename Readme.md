@@ -178,7 +178,7 @@ class User extends DB.Model {
 let user = new User;
 user.set('name', 'John');
 user.save(() => {
-  // do something when you user is created
+  // do something when your user is created
   console.log(user.get('_id'));
 });
 ```
@@ -210,8 +210,11 @@ User.find('5748aa5d45af47fc9909310b', (err, user) => {
 ```
 
 ## TODO
+  - Validation
+    - Dates?
   - Mongo
     - Advanced wheres
     - Agregates
     - Joins
+    - Model events
   - Mysql(maybe later)
