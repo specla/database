@@ -5,6 +5,8 @@ let ObjectId = require('mongodb').ObjectID;
 let assert = require('assert');
 let Validator = require('./Validator');
 
+let connection = null
+
 class QueryBuilder {
 
   /**
@@ -50,21 +52,15 @@ class QueryBuilder {
   connect(){
     let url = 'mongodb://'+this.username+(this.username ? ':' : '')+this.password+(this.username ? '@' : '')+this.host+':'+this.port+'/'+this.database+(this.authSource !== undefined ? '?authSource='+this.authSource : '');
 
-    // connnect and set a persistent connection
-    if(this._db === null){
-      MongoClient.connect(url, (err, db) => {
-        assert.equal(null, err);
-        this._db = db;
-        this.close = () => {
-          this._db = null;
-          this._db.close();
-          this.close = null;
-        };
-        this.query(db, () => {});
-      });
-    } else {
-      this.query(this._db, () => {});
+    if (connection !== null) {
+      return this.query(connection, () => {});
     }
+
+    MongoClient.connect(url, (err, db) => {
+      if (err) throw err
+      connection = db
+      this.query(connection, () => {});
+    })
   }
 
   /**
