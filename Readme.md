@@ -216,4 +216,3 @@ User.find('5748aa5d45af47fc9909310b', (err, user) => {
     - Agregates
     - Joins
     - Model events
-  - Mysql(maybe later)
