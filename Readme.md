@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Specla/Database.svg?branch=master)](https://travis-ci.org/Specla/Database)
 
-This module is the database handler for the Specla Framework, its like Laravels
-Eloquent but just for javascript and MongoDB.
+Query builder for mongodb.
 
 
 ### Setup
